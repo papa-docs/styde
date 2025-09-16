@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Архів - Проїзний</title>
+  <style>
+    :root{
+      --bg: #f7f8f9;
+      --card: #fff;
+      --muted: #9aa0a6;
+      --accent: #4CAF50;
+      --radius: 12px;
+      --gap: 12px;
+      --container-pad: 12px;
+      --max-width: 920px; /* для планшетов/десктопа */
+    }
+
+    html,body{height:100%; margin:0; background:var(--bg); font-family:-apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#111;}
+    /* Учитываем вырезы / индикатор (iPhone и др) */
+    .shell{padding: env(safe-area-inset-top) var(--container-pad) calc(env(safe-area-inset-bottom) + 84px) var(--container-pad); max-width:var(--max-width); margin:0 auto;}
+
+    /* Шапка */
+    .header{
+      display:flex; align-items:center; gap:12px;
+      padding:14px 4px; background:transparent;
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(6px);
+    }
+    .back{font-size:20px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:10px; cursor:pointer; color:#222;}
+    .title{font-weight:600; font-size:18px; flex:1; text-align:center; margin-right:36px;}
+
+    /* Вкладки */
+    .tabs{
+      display:flex; gap:8px; background:transparent; padding:8px 0 0;
+    }
+    .tab{
+      flex:1; text-align:center; padding:10px 8px; border-radius:999px; color:var(--muted); font-weight:600; cursor:pointer;
+      user-select:none; font-size:15px;
+    }
+    .tab.active{ background:var(--card); color:#000; box-shadow:0 1px 4px rgba(0,0,0,0.06); border-bottom:3px solid var(--accent); }
+
+    /* Список карточек */
+    .list{ padding:10px 0 0; display:flex; flex-direction:column; gap:14px; }
+
+    .card{
+      display:flex; align-items:flex-start; gap:12px;
+      background:var(--card); border-radius:var(--radius); padding:14px;
+      box-shadow:0 6px 20px rgba(19,20,24,0.04);
+    }
+
+    .logo{
+      flex:0 0 52px; height:52px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center;
+      box-shadow:0 6px 18px rgba(0,0,0,0.04); background:#fff;
+    }
+    .logo img{ width:44px; height:44px; object-fit:contain; display:block; }
+
+    .card-main{ flex:1; min-width:0; } /* min-width чтобы текст переносился корректно */
+    .city{ font-weight:700; font-size:16px; color:#111; line-height:1; }
+    .company{ margin-top:2px; font-size:13px; color: #4a4a4a; }
+    .meta{ margin-top:8px; font-size:14px; color:#333; display:flex; flex-direction:column; gap:6px; }
+    .meta .dates{ color:#666; font-size:14px; }
+    .meta .status{ font-size:14px; }
+
+    .status.active{ color:var(--accent); font-weight:700; display:flex; align-items:center; gap:8px; }
+    .status.inactive{ color:var(--muted); font-weight:600; }
+
+    /* Иконки справа (transport) */
+    .icons{
+      display:flex; flex-direction:column; gap:8px; align-items:center; justify-content:flex-start;
+      flex:0 0 36px; color: #bfc6cb;
+    }
+    .icons svg{ width:22px; height:22px; opacity:0.9; }
+
+    /* Фиксированная кнопка снизу */
+    .bottom-bar{
+      position:fixed; left:0; right:0; bottom:0; z-index:40;
+      padding: calc(env(safe-area-inset-bottom) + 12px) var(--container-pad) 12px;
+      background: linear-gradient(0deg, rgba(247,248,249,0.95), rgba(247,248,249,0.65));
+      backdrop-filter: blur(6px);
+      box-shadow: 0 -6px 20px rgba(0,0,0,0.03);
+    }
+    .btn{
+      width:100%; max-width:980px; margin:0 auto; display:block;
+      background:var(--accent); color:#fff; border:none; font-weight:700;
+      font-size:16px; padding:14px; border-radius:12px; cursor:pointer;
+      box-shadow: 0 6px 14px rgba(76,175,80,0.18);
+    }
+
+    /* Responsive tweaks */
+    @media(min-width:720px){
+      .shell{ padding-left:18px; padding-right:18px; }
+      .card{ padding:16px; gap:16px; }
+      .logo{ width:64px; height:64px; }
+      .icons{ flex:0 0 44px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="header">
+      <div class="back" onclick="history.back()">←</div>
+      <div class="title">Архів</div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab" id="tab-ticket" onclick="switchTab('ticket')">Квиток</div>
+      <div class="tab active" id="tab-pass" onclick="switchTab('pass')">Проїзний</div>
+    </div>
+
+    <div id="content-area" style="margin-top:10px;">
+      <div id="cards" class="list"></div>
+    </div>
+  </div>
+
+  <!-- нижняя фиксированная панель -->
+  <div class="bottom-bar">
+    <button class="btn" onclick="scanQR()">Відсканувати QR-код</button>
+  </div>
+
+<script>
+  // Пример данных — можешь подгружать с сервера
+  const tickets = [
+    {
+      city: "Одеса",
+      company: "Одесміськелектротранс",
+      start: "2025-09-02",
+      end:   "2025-09-30",
+      logo: "/mnt/data/AD9CFF06-A274-424F-ADA0-B4D5D023EFB9.jpeg" // локально прикреплено (замени на URL если нужно)
+    },
+    {
+      city: "Одеса",
+      company: "Одесміськелектротранс",
+      start: "2023-09-01",
+      end:   "2023-09-07",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Coat_of_Arms_of_Odessa.svg/120px-Coat_of_Arms_of_Odessa.svg.png"
+    },
+    {
+      city: "Дніпро",
+      company: "КП Дніпровський електротранспорт ДМР",
+      start: "2023-07-11",
+      end:   "2023-07-11",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Coat_of_Arms_of_Dnipro.svg/120px-Coat_of_Arms_of_Dnipro.svg.png"
+    }
+  ];
+
+  // Функция форматирования даты
+  function formatDateISO(iso){
+    const d = new Date(iso);
+    if (isNaN(d)) return iso;
+    return d.toLocaleDateString('uk-UA', {day:'2-digit', month:'2-digit', year:'numeric'});
+  }
+
+  // Рендер карточек
+  function renderCards(list){
+    const container = document.getElementById('cards');
+    container.innerHTML = '';
+    const now = new Date();
+
+    list.forEach(item => {
+      const start = new Date(item.start);
+      const end   = new Date(item.end);
+      const isActive = now >= start && now <= end;
+
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      // Структура карточки
+      card.innerHTML = `
+        <div class="logo"><img src="${item.logo}" alt="${item.city}" onerror="this.style.opacity=0.6; this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=48 height=48><rect width=48 height=48 fill=%23f0f0f0 /></svg>'"></div>
+        <div class="card-main">
+          <div class="city">${item.city}</div>
+          <div class="company">${item.company}</div>
+          <div class="meta">
+            <div class="dates">Строк дії: ${formatDateISO(item.start)} - ${formatDateISO(item.end)}</div>
+            <div class="status ${isActive ? 'active' : 'inactive'}">${isActive ? ('Дійсний: ' + now.toLocaleString('uk-UA')) : 'Дійсний: Ні'}</div>
+          </div>
+        </div>
+        <div class="icons">
+          <!-- метро -->
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+          <!-- автобус -->
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+          <!-- трамвай -->
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12v8H6z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  // Инициализация
+  renderCards(tickets);
+
+  // Простые заглушки для вкладок/кнопки
+  function switchTab(tab){
+    document.getElementById('tab-ticket').classList.toggle('active', tab === 'ticket');
+    document.getElementById('tab-pass').classList.toggle('active', tab === 'pass');
+    // можно менять данные при переключении
+    //renderCards(tab === 'ticket' ? tickets.filter(...) : tickets)
+  }
+
+  function scanQR(){
+    alert('Запустить сканер QR (заглушка) — сюда подключаем нативный/браузерный сканер.');
+  }
+</script>
+</body>
+</html>
