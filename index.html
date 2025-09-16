@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="uk">
+<head>
+    <!-- ...existing code... -->
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<!-- ...existing code... -->
+ <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, orientation=portrait">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Студентський</title>
+<style>
+    
+  body {
+    
+  margin: 0;
+  padding: 0;
+  background: url('./fon.png') no-repeat center center fixed;
+  background-size: cover;
+    overflow: hidden;
+    
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .title {
+    margin-top: 60px;
+    font-size: 27px;
+    letter-spacing: 1px; 
+    font-weight: 300;
+    color: #fff;
+    margin-bottom: 12px;
+     width: 92%;
+    text-align: left;
+  }
+  .card {
+    display: flex;
+  flex-direction: column;
+  align-items: center; /* выравнивание всех дочерних по центру */
+    background: #fff;
+    border-radius: 10px;
+    width: 95%;
+    
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  padding: 0px;
+     margin: 2px 0; 
+
+    
+  }
+  .logo {
+    margin-bottom: 10px;
+    margin-top: 20px;
+    display: flex;
+    
+    align-items: center; /* выровнять по центру по вертикали */
+    max-width: 140px;         /* ширина блока, чтобы смотрелось красиво */
+   
+   justify-content: center; 
+     box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    border-radius: 10px;
+    
+    
+  }
+  .logo img {
+    display: flex;
+    margin: 10px 15px;
+    width: 120px;
+    height: 120px;
+    
+    
+   
+  }
+  .meta {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .meta div {
+    font-size: 15px;
+    margin: 2px 0;
+  }
+  
+  .progress {
+    height: 5px;
+    background: #e0e0e0;
+    
+    overflow: hidden;
+    margin: 0px 0;
+  }
+  .progress-bar {
+    height: 100%;
+    background: #4da723;
+    transition: width 0.5s linear;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    margin: 15px 0 10px 0;
+  }
+  .time {
+    font-size: 22px;
+    font-weight: 500;
+    color: #4da723;
+    margin-right: 15px;
+  }
+  .date {
+    font-size: 22px;
+    font-weight: 500;
+    color: #000;
+    margin-left: 15px;
+  }
+  .price {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 15px 0 13px 0;
+  }
+  .sub {
+    text-align: center;
+    font-size: 14px;
+    color: #696969;
+    margin: 0px 0 2px 0;
+  }
+  #range {
+  font-size: 17px;
+    color: #171717;
+}
+  .days {
+    text-align: center;
+    font-size: 14px;
+    color: #444;
+    margin-top: 4px;
+    margin-bottom: 15px;
+  }
+  .line-time{
+    background: #f4f3f3;
+    width: 100%;
+    padding-bottom: 5px;
+  }
+
+  .main-full{
+    margin: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 95vh;
+    
+    box-sizing: border-box;
+    flex-direction: column;
+  }
+.close-btn {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  z-index: 10;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+  
+
+</style>
+</head>
+<body>
+  <img src="close.png" alt="Закрыть" class="close-btn" onclick="window.close()">
+    <div class="main-full">
+  <div class="title">Студентський (тролейбус місячний)</div>
+
+  <div class="card">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Coat_of_Arms_of_Odesa.svg" alt="Одеса герб">
+    </div>
+    <div class="meta">
+      <div>тролейбус</div>
+      <div>Одеса</div>
+      <div>Серія <b>548342060</b></div>
+    </div>
+
+    
+  <img src="./tramvay.gif" 
+     alt="Трамвай"
+  style="
+    width: 100%;
+                  /* задаёшь высоту под себя */
+   
+    object-fit: cover;          /* убирает полосы */
+    object-position: center;    /* центрирование */
+    display: block;
+    background: transparent;
+    
+  ">
+  
+
+
+    <div class="line-time">
+    <div class="progress"><div class="progress-bar" id="progress"></div></div>
+    <div class="row">
+        <div class="date" id="date">--.--</div>
+      <div class="time" id="time">--:--:--</div>
+      
+    </div></div>
+    <div class="price">240.0 UAH</div>
+    <div class="sub">Строк дії</div>
+    <div class="sub" id="range">02.09.2025 - 30.09.2025</div>
+    <div class="days" id="daysLeft">До закінчення строку дії залишилося «--» днів</div>
+  </div>
+</div>
+<script>
+  function update() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const start = new Date(year, month, 1); // начало месяца
+    const end = new Date(year, month + 1, 0, 23, 59, 59); // конец месяца
+
+    // время
+    const t = now.toLocaleTimeString("uk-UA",{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    document.getElementById("time").textContent = t;
+
+    // дата
+    const day = String(now.getDate()).padStart(2,'0');
+    const mon = String(now.getMonth()+1).padStart(2,'0');
+    document.getElementById("date").textContent = `${day}.${mon}`;
+
+    // дни
+    const diff = Math.ceil((end - now)/(1000*60*60*24));
+    document.getElementById("daysLeft").textContent = 
+      `До закінчення строку дії залишилося «${diff-1>0?diff-1:0}» днів`;
+
+    // прогресс (чем ближе к концу месяца, тем меньше полоска)
+    const total = end - start;
+    const left = end - now;
+    let pct = Math.max(0, Math.min(100, (left / total) * 100));
+    document.getElementById("progress").style.width = pct + "%";
+  }
+  setInterval(update,1000);
+  update();
+</script>
+</body>
+</html>
