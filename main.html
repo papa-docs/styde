@@ -20,6 +20,29 @@
     /* Учитываем вырезы / индикатор (iPhone и др) */
     .shell{padding: env(safe-area-inset-top) var(--container-pad) calc(env(safe-area-inset-bottom) + 84px) var(--container-pad); max-width:var(--max-width); margin:0 auto;}
 
+
+/* Убираем выделение текста и синюю подсветку при клике */
+.no-select {
+  user-select: none;         /* стандарт */
+  -webkit-user-select: none; /* Chrome/Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+}
+
+.no-outline:focus {
+  outline: none;             /* убираем рамку при фокусе */
+}
+
+a, a:focus, a:active {
+  outline: none;             /* для ссылок */
+  text-decoration: none;     /* убираем подчеркивание */
+}
+
+div:focus, div:active {
+  outline: none;             /* убираем обводку и синий фон */
+  -webkit-tap-highlight-color: transparent; /* для мобильных */
+}
+
     /* Шапка */
     .header{
       display:flex; align-items:center; gap:12px;
@@ -37,6 +60,13 @@
   height: 25px;
   object-fit: contain;
 }
+
+a {
+  text-decoration: none; /* убирает подчеркивание */
+  color: inherit;        /* наследует цвет от родителя или div */
+}
+
+
     /* Вкладки */
     .tabs{
       display:flex; 

@@ -31,6 +31,32 @@
   z-index: -1;
 }
 
+a {
+  text-decoration: none; /* убирает подчеркивание */
+  color: inherit;        /* наследует цвет от родителя или div */
+}
+
+/* Убираем выделение текста и синюю подсветку при клике */
+.no-select {
+  user-select: none;         /* стандарт */
+  -webkit-user-select: none; /* Chrome/Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+}
+
+.no-outline:focus {
+  outline: none;             /* убираем рамку при фокусе */
+}
+
+a, a:focus, a:active {
+  outline: none;             /* для ссылок */
+  text-decoration: none;     /* убираем подчеркивание */
+}
+
+div:focus, div:active {
+  outline: none;             /* убираем обводку и синий фон */
+  -webkit-tap-highlight-color: transparent; /* для мобильных */
+}
 
   .title {
     margin-top: 60px;
