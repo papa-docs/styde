@@ -97,7 +97,6 @@
   }
   .progress-bar {
     height: 100%;
-    background: #4da723;
     transition: width 0.5s linear;
   }
   .row {
@@ -188,7 +187,7 @@
     <div class="meta">
       <div>тролейбус</div>
       <div>Одеса</div>
-      <div>Серія <b>548342060</b></div>
+      <div>Серія <b id="series"></b></div>
     </div>
 
     
@@ -222,6 +221,14 @@
   </div>
 </div>
 <script>
+  function getRandomSeries() {
+    // Генерирует 9-значное число
+    return Math.floor(100000000 + Math.random() * 900000000);
+  }
+
+  // Сгенерировать номер серии один раз при загрузке страницы
+  document.getElementById("series").textContent = getRandomSeries();
+
   function update() {
     const now = new Date();
     const year = now.getFullYear();
@@ -243,12 +250,21 @@
     document.getElementById("daysLeft").textContent = 
       `До закінчення строку дії залишилося «${diff-1>0?diff-1:0}» днів`;
 
-    // прогресс (чем ближе к концу месяца, тем меньше полоска)
-    const total = end - start;
-    const left = end - now;
-    let pct = Math.max(0, Math.min(100, (left / total) * 100));
-    document.getElementById("progress").style.width = pct + "%";
-  }
+    // прогресс (чем ближе к концу месяца, тем больше полоска)
+   const total = end - start;
+const passed = now - start; // сколько времени прошло с начала месяца
+let pct = Math.max(0, Math.min(100, (passed / total) * 100));
+document.getElementById("progress").style.width = pct + "%";
+
+
+
+// смена цвета на 15-й день
+if (now.getDate() >= 15) {
+  document.getElementById("progress").style.background = "#ef6f00";
+} else {
+  document.getElementById("progress").style.background = "#4da723";
+}
+}
   setInterval(update,1000);
   update();
 </script>
