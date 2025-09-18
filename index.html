@@ -8,25 +8,34 @@
 <!-- ...existing code... -->
  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, orientation=portrait">
 <meta charset="utf-8" />
-
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Студентський</title>
 <style>
     
+
+
   body {
     
-  margin: 0;
-  padding: 0;
-  background: url('./fon.png') no-repeat center center fixed;
   background-color: #000000;
-  background-size: cover;
+  background-size: contain;
     overflow: hidden;
     
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
+.bg-img {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill; /* растягивает полностью, без полос и без сохранения пропорций */
+  z-index: -1;
+}
+
+
   .title {
     margin-top: 60px;
     font-size: 1.5rem;
-    letter-spacing: 1px; 
+     
     font-weight: 300;
     color: #fff;
     margin-bottom: 12px;
@@ -166,6 +175,8 @@
 </style>
 </head>
 <body>
+  <img src="fon.png" class="bg-img">
+
   <img src="close.png" alt="Закрыть" class="close-btn" onclick="window.close()">
     <div class="main-full">
   <div class="title">Студентський (тролейбус місячний)</div>
@@ -183,7 +194,8 @@
     
   <img src="./tramvay.gif" 
      alt="Трамвай"
-  style="
+  style=" 
+    margin-top: 3px; /* увеличьте значение по необходимости */
     width: 100%;
                   /* задаёшь высоту под себя */
    
@@ -240,6 +252,7 @@
   setInterval(update,1000);
   update();
 </script>
+
+ 
 </body>
 </html>
-
