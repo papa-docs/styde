@@ -11,10 +11,11 @@
     {
       "src": "unnamed.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose":"maskable"
+      "type": "image/png"
+      
     }
   ]
 
 }
+
 
